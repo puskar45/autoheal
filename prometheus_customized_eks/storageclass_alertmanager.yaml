@@ -1,0 +1,18 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc-prometheus-alertmanager
+  namespace: monitoring
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+#provisioner: ebs.csi.eks.amazonaws.com  # for auto mode clusters
+provisioner: ebs.csi.aws.com 
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  type: gp3
+  encrypted: "true"
+  tagSpecification_1: "Name=vol-infra-prod-prometheus-alertmanager"
+  tagSpecification_2: "Purpose=Storing metrics for prometheus"
+
+reclaimPolicy: Delete   # Prevents accidental deletion of EBS volume
+allowVolumeExpansion: true   # enables volume resizing

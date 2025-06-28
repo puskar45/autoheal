@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-config
+  namespace: logging
+  labels:
+    k8s-app: fluent-bit
+data:
+  filter-kubernetes.conf: |
+    [FILTER]
+        Name                kubernetes
+        Match               kube.*
+        Kube_URL            https://kubernetes.default.svc:443
+        Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+        Kube_Tag_Prefix     kube.var.log.containers.
+        Merge_Log           On
+        Merge_Log_Key       raw_log
+        K8S-Logging.Parser  On
+        K8S-Logging.Exclude Off
+        Add log_processed true
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush         1
+        Log_Level     info
+        Daemon        off
+        Parsers_File  parsers.conf
+        HTTP_Server   off
+        HTTP_Listen   0.0.0.0
+        HTTP_Port     2020
+        Health_Check On
+
+    @INCLUDE input-kubernetes.conf
+    @INCLUDE filter-kubernetes.conf
+    @INCLUDE output-elasticsearch.conf
+  input-kubernetes.conf: |
+    [INPUT]
+        Name              tail
+        Tag               kube.*
+        Path              /var/log/containers/*.log
+        Exclude_Path      /var/log/containers/*_amazon-cloudwatch_*.log, /var/log/containers/*_amazon-guardduty_*.log, /var/log/containers/*_cert-manager_*.log, /var/log/containers/*_default_*.log, /var/log/containers/*_external-metrics_*.log, /var/log/containers/*_falco_*.log, /var/log/containers/*_keda_*.log, /var/log/containers/*_keda_*.log, /var/log/containers/*_keda-test_*.log, /var/log/containers/*_kube-node-lease_*.log, /var/log/containers/*_kube-public_*.log, var/log/containers/*_kube-system_*.log, var/log/containers/*_kubeclarity_*.log, var/log/containers/*_kubernetes-dashboard_*.log, var/log/containers/*_logging_*.log, var/log/containers/*_monitoring_*.log, var/log/containers/*_opentelemetry-operator-system_*.log, var/log/containers/*_traffic-generator_*.log, var/log/containers/aws-load-balancer-controller-*
+        Parser            cri
+        DB                /var/log/flb_kube.db
+        Mem_Buf_Limit     100MB
+        Skip_Long_Lines   On
+        Refresh_Interval  10
+  output-elasticsearch.conf: |
+    [OUTPUT]
+        Name            es
+        Match           *
+        Host            cgt-apps.log.cedargate.com
+        Port            443
+        TLS             On
+        TLS.Verify      Off
+        AWS_Auth        On
+        AWS_Region      us-east-1
+        #Retry_Limit     6
+        Logstash_Format On
+        #Logstash_Prefix pod_name
+        Logstash_Prefix_Key $kubernetes['container_name']
+        Logstash_DateFormat %Y.%m
+        Trace_Error On
+        Replace_Dots    On
+        Retry_Limit     False
+  parsers.conf: |
+    [PARSER]
+        Name multiline
+        Format regex
+        Regex  ^{"log":"(?<message>.*),"time":"(?<time>[^"]*)"}$
+        Time_Key  time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+
+    [PARSER]
+        Name   apache
+        Format regex
+        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+
+    [PARSER]
+        Name   apache2
+        Format regex
+        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+
+    [PARSER]
+        Name   apache_error
+        Format regex
+        Regex  ^\[[^ ]* (?<time>[^\]]*)\] \[(?<level>[^\]]*)\](?: \[pid (?<pid>[^\]]*)\])?( \[client (?<client>[^\]]*)\])? (?<message>.*)$
+
+    [PARSER]
+        Name   nginx
+        Format regex
+        Regex ^(?<remote>[^ ]*) (?<host>[^ ]*) (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+
+    [PARSER]
+        Name   json
+        Format json
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+        Remove_Prefix true
+
+    [PARSER]
+        Name        docker
+        Format      json
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep   off
+        Remove_Prefix true
+
+    [PARSER]
+        # http://rubular.com/r/tjUt3Awgg4
+        Name cri
+        Format regex
+        Regex  ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<log>.*)$
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+        Remove_Prefix true
+
+    [PARSER]
+        Name        syslog
+        Format      regex
+        Regex       ^\<(?<pri>[0-9]+)\>(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
+        Time_Key    time
+        Time_Format %b %d %H:%M:%S

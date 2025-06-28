@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: test-deployment
+  name: test-deployment
+  namespace: dev-bundle-pricer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-deployment
+  template:
+    metadata:
+      labels:
+        app: test-deployment
+    spec:
+      serviceAccountName: "awsresourcerequest" #Name of the SA we ‘re using
+      automountServiceAccountToken: true
+      containers:
+      - image: amazon/aws-cli
+        name: aws
+        command: ["sleep","10000"]

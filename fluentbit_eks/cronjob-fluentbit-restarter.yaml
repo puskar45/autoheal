@@ -1,0 +1,66 @@
+# Create file cron-job.yaml
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: restart-fluentbit
+  namespace: <namespace>
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: restart-fluentbit
+  namespace: <namespace>
+rules:
+  - apiGroups: ["apps"]
+    resources: ["daemonsets"]
+    verbs: ["get", "patch", "list", "watch"] 
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: restart-fluentbit
+  namespace: <namespace>
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: restart-fluentbit
+subjects:
+  - kind: ServiceAccount
+    name: restart-fluentbit
+    namespace: <namespace>
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: restart-fluentbit
+  namespace: logging
+spec:
+  successfulJobsHistoryLimit: 1 #These fields specify how many completed and failed jobs should be kept. 
+  failedJobsHistoryLimit: 1     #By default, they are set to 3 and 1 respectively. We have set this as 2 history to keep 
+  concurrencyPolicy: Forbid
+  schedule: "5 4 * * *" # At 04:00 UTC daily i.e 09:45 NPT daily.
+  jobTemplate:
+    spec:
+      backoffLimit: 2 # this has very low chance of failing, as all this does is prompt kubernetes to schedule new replica set for the deployment
+      activeDeadlineSeconds: 600 # timeout, makes most sense with # "waiting for rollout" variant specified below
+      template:
+        spec:
+          serviceAccountName: restart-fluentbit
+          restartPolicy: Never
+          # nodeSelector:
+          #   Environment: nonprod
+          containers:
+            - name: kubectl
+              image: bitnami/kubectl
+              command:
+                - bash
+                - -c
+                - >-
+                  kubectl rollout restart daemonset fluent-bit -n <namespace> &&
+                  kubectl rollout status daemonset fluent-bit -n <namespace>
+# kubectl apply -f cron-job.yaml
+# kubectl get cronjob -n my-namespace
