@@ -1,0 +1,85 @@
+# EKS Cluster Inventory
+# Each cluster specifies its AWS CLI profile for cross-account access.
+# env: NonProd or Prod
+
+defaults:
+  timeout: 3600
+  poll_interval: 30
+
+clusters:
+  # ── NonProd ─────────────────────────────────────────────
+  - name: eks-cap-dev-datawing
+    region: us-east-1
+    profile: EKS-CapAdjNonProd
+    env: NonProd
+
+  - name: eks-infra-qc-pipeline
+    region: us-east-1
+    profile: EKS-Pipeline
+    env: NonProd
+
+  - name: eks-dev-sftp-cluster
+    region: us-east-1
+    profile: EKS-Pipeline
+    env: NonProd
+
+  - name: ecf-dev-k8s2118
+    region: us-east-1
+    profile: CGEKS-ECFNonProd
+    env: NonProd
+
+  - name: bundle-dev-eks8518
+    region: us-east-1
+    profile: EKS-BundlesNonProd
+    env: NonProd
+
+  - name: cgt-atlassian-stg
+    region: us-east-1
+    profile: EKS-Corp
+    env: NonProd
+
+  - name: eks-non-prod-analytics
+    region: us-east-1
+    profile: default
+    env: NonProd
+
+  # ── Prod ────────────────────────────────────────────────
+
+  - name: eks-data-deidentification-prod-cluster
+    region: us-east-1
+    profile: EKS-Pipeline
+    env: Prod
+
+  - name: pipeline
+    region: us-east-1
+    profile: EKS-Pipeline
+    env: Prod
+  
+  - name: OM-NONPROD-k8s9858
+    region: us-east-1
+    profile: default
+    env: Prod
+
+  - name: ecf-prod-eks7462
+    region: us-east-1
+    profile: EKS-ECFProd
+    env: Prod
+  
+  - name: bundle-prod
+    region: us-east-1
+    profile: EKS-BundlesProd
+    env: Prod
+
+  - name: atlassian-prod
+    region: us-east-1
+    profile: EKS-Corp
+    env: Prod
+
+
+    
+    
+
+
+    
+
+    
