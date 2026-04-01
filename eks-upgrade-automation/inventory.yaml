@@ -8,72 +8,22 @@ defaults:
 
 clusters:
   # ── NonProd ─────────────────────────────────────────────
-  - name: eks-cap-dev-datawing
+  - name: eks-dev-test
     region: us-east-1
-    profile: EKS-CapAdjNonProd
+    profile: EKS-account1
     env: NonProd
 
-  - name: eks-infra-qc-pipeline
-    region: us-east-1
-    profile: EKS-Pipeline
-    env: NonProd
 
-  - name: eks-dev-sftp-cluster
-    region: us-east-1
-    profile: EKS-Pipeline
-    env: NonProd
-
-  - name: ecf-dev-k8s2118
-    region: us-east-1
-    profile: CGEKS-ECFNonProd
-    env: NonProd
-
-  - name: bundle-dev-eks8518
-    region: us-east-1
-    profile: EKS-BundlesNonProd
-    env: NonProd
-
-  - name: cgt-atlassian-stg
-    region: us-east-1
-    profile: EKS-Corp
-    env: NonProd
-
-  - name: eks-non-prod-analytics
-    region: us-east-1
-    profile: default
-    env: NonProd
 
   # ── Prod ────────────────────────────────────────────────
 
-  - name: eks-data-deidentification-prod-cluster
+
+
+  - name: prod01
     region: us-east-1
-    profile: EKS-Pipeline
+    profile: EKS-account2
     env: Prod
 
-  - name: pipeline
-    region: us-east-1
-    profile: EKS-Pipeline
-    env: Prod
-  
-  - name: OM-NONPROD-k8s9858
-    region: us-east-1
-    profile: default
-    env: Prod
-
-  - name: ecf-prod-eks7462
-    region: us-east-1
-    profile: EKS-ECFProd
-    env: Prod
-  
-  - name: bundle-prod
-    region: us-east-1
-    profile: EKS-BundlesProd
-    env: Prod
-
-  - name: atlassian-prod
-    region: us-east-1
-    profile: EKS-Corp
-    env: Prod
 
 
     
