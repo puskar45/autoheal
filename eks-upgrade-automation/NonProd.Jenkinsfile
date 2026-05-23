@@ -1,5 +1,5 @@
 // EKS_Upgrade_NonProd
-// Parameters (MODE, UPGRADE_TARGET, Target_Version, CLUSTER, EMAIL_TO)
+// Parameters (MODE, UPGRADE_TARGET, TARGET_VERSION, CLUSTER, EMAIL_TO)
 // are configured in the Jenkins job UI — not defined here.
 
 pipeline {
@@ -20,8 +20,11 @@ pipeline {
                         if (!params.CLUSTER?.trim()) {
                             error('CLUSTER is required for upgrade mode')
                         }
-                        if (params.UPGRADE_TARGET in ['cluster', 'all'] && !params.Target_Version?.trim()) {
-                            error('Target_Version is required when upgrading cluster or all')
+                        if (params.UPGRADE_TARGET in ['cluster', 'all']) {
+                            def tv = params.TARGET_VERSION ?: ''
+                            if (!tv.replaceAll(',', '').trim()) {
+                                error('TARGET_VERSION is required when upgrading cluster or all')
+                            }
                         }
                     }
                 }
@@ -49,8 +52,12 @@ pipeline {
                 dir('eks-upgrade-automation') {
                     script {
                         def cmd = "python3 upgrade.py --mode ${params.UPGRADE_TARGET} --cluster ${params.CLUSTER} --env ${ENV}"
-                        if (params.UPGRADE_TARGET in ['cluster', 'all'] && params.Target_Version?.trim()) {
-                            cmd += " --target-version ${params.Target_Version}"
+                        if (params.UPGRADE_TARGET in ['cluster', 'all']) {
+                            def tv = params.TARGET_VERSION ?: ''
+                            def cleanVersion = tv.replaceAll(',', '').trim()
+                            if (cleanVersion) {
+                                cmd += " --target-version ${cleanVersion}"
+                            }
                         }
                         sh cmd
                     }

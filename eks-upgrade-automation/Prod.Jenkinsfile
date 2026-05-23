@@ -1,4 +1,4 @@
-// EKS_Upgrade_NonProd
+// EKS_Upgrade_Prod
 // Parameters (MODE, UPGRADE_TARGET, Target_Version, CLUSTER, EMAIL_TO)
 // are configured in the Jenkins job UI — not defined here.
 
@@ -83,8 +83,8 @@ pipeline {
                 if (params.EMAIL_TO?.trim()) {
                     emailext(
                         to: params.EMAIL_TO,
-                        subject: "SUCCESS: EKS NonProd ${params.MODE} - Build #${BUILD_NUMBER}",
-                        body: """EKS NonProd ${params.MODE} completed successfully.
+                        subject: "SUCCESS: EKS Prod ${params.MODE} - Build #${BUILD_NUMBER}",
+                        body: """EKS Prod ${params.MODE} completed successfully.
 
 Mode: ${params.MODE}
 Cluster: ${params.CLUSTER ?: 'ALL'}
@@ -98,8 +98,8 @@ Build: ${BUILD_URL}""",
                 if (params.EMAIL_TO?.trim()) {
                     emailext(
                         to: params.EMAIL_TO,
-                        subject: "FAILURE: EKS NonProd ${params.MODE} - Build #${BUILD_NUMBER}",
-                        body: """EKS NonProd ${params.MODE} failed.
+                        subject: "FAILURE: EKS Prod ${params.MODE} - Build #${BUILD_NUMBER}",
+                        body: """EKS Prod ${params.MODE} failed.
 
 Mode: ${params.MODE}
 Cluster: ${params.CLUSTER ?: 'ALL'}

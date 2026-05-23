@@ -322,6 +322,10 @@ def validate_pods(cluster_name: str, region: str, profile: str) -> tuple[bool, l
         ns = pod["metadata"]["namespace"]
         pod_name = pod["metadata"]["name"]
         phase = pod.get("status", {}).get("phase", "Unknown")
+        reason = pod.get("status", {}).get("reason", "")
+
+        # Use reason if available (e.g. Evicted, OOMKilled) for more accurate display
+        display_status = reason if reason else phase
 
         if ns not in ns_stats:
             ns_stats[ns] = {"healthy": 0, "unhealthy": 0, "unhealthy_pods": []}
@@ -330,7 +334,7 @@ def validate_pods(cluster_name: str, region: str, profile: str) -> tuple[bool, l
             ns_stats[ns]["healthy"] += 1
         else:
             ns_stats[ns]["unhealthy"] += 1
-            ns_stats[ns]["unhealthy_pods"].append(f"{pod_name} ({phase})")
+            ns_stats[ns]["unhealthy_pods"].append(f"{pod_name} ({display_status})")
 
     for ns in sorted(ns_stats):
         stats = ns_stats[ns]
