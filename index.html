@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Puskar Khadka | Senior Platform Engineer</title>
+  <title>Puskar Khadka | Platform Engineer</title>
   <meta name="description" content="Senior Platform Engineer specializing in AWS, Kubernetes, Terraform, GitOps and DevOps automation." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -200,14 +200,14 @@
     <div class="projects-grid">
       <div class="project-card glass highlight fade-up">
         <div class="project-top"><span class="cat-badge cat-Infrastructure">Infrastructure</span><span class="star">&#9733;</span></div>
-        <h3>Production EKS Platform</h3>
-        <p>End-to-end production-grade EKS infrastructure with multi-account AWS setup, autoscaling, and GitOps delivery.</p>
+        <h3>AWS Multi-Account Platform</h3>
+        <p>Production-grade AWS infrastructure across multiple accounts with centralized networking, security, and GitOps delivery.</p>
         <ul class="project-details">
-          <li>Multi-environment EKS clusters across separate AWS accounts</li>
-          <li>Karpenter-based node autoscaling with spot instance optimization</li>
+          <li>Provisioned multiple EKS clusters across multiple AWS accounts with multi-cluster ArgoCD following GitOps practices</li>
+          <li>Reusable Terraform modules for VPC, EKS, RDS, ALB, and IAM</li>
           <li>ArgoCD-based GitOps with app-of-apps pattern</li>
         </ul>
-        <div class="project-tech"><span>AWS</span><span>EKS</span><span>Terraform</span><span>ArgoCD</span><span>Karpenter</span></div>
+        <div class="project-tech"><span>AWS</span><span>Terraform</span><span>VPC</span><span>ArgoCD</span><span>IAM</span></div>
       </div>
       <div class="project-card glass highlight fade-up">
         <div class="project-top"><span class="cat-badge cat-Observability">Observability</span><span class="star">&#9733;</span></div>
@@ -226,20 +226,20 @@
         <p>Python-based automation framework for safe, zero-downtime EKS cluster version upgrades.</p>
         <ul class="project-details">
           <li>Automated discovery of clusters requiring upgrades</li>
-          <li>Pre/post upgrade validation with rollback capability</li>
-          <li>Jenkins pipeline with approval gates for production</li>
+          <li>Upgrades EKS cluster version, managed node groups, and AWS managed add-ons automatically</li>
+          <li>Generates upgrade status report post-completion with Jenkins pipeline approval gates for production</li>
         </ul>
         <div class="project-tech"><span>Python</span><span>AWS EKS</span><span>Jenkins</span><span>Boto3</span></div>
       </div>
       <div class="project-card glass fade-up">
         <div class="project-top"><span class="cat-badge cat-Security">Security</span></div>
-        <h3>Kubernetes Governance Platform</h3>
-        <p>Policy enforcement and governance framework for multi-tenant Kubernetes clusters.</p>
+        <h3>Infrastructure as Code Library</h3>
+        <p>Reusable Terraform module library covering core AWS services, enforcing standards and reducing provisioning time across teams.</p>
         <ul class="project-details">
-          <li>OPA/Gatekeeper policies for resource limits and image registries</li>
-          <li>RBAC templates for team-based namespace isolation</li>
+          <li>Modules for VPC, EKS, RDS, ALB, IAM, S3, and CloudFront</li>
+          <li>Jenkins pipeline for Terraform plan and apply to manage infrastructure changes</li>
         </ul>
-        <div class="project-tech"><span>Kubernetes</span><span>OPA</span><span>Gatekeeper</span><span>Helm</span></div>
+        <div class="project-tech"><span>Terraform</span><span>Terragrunt</span><span>Atlantis</span><span>AWS</span></div>
       </div>
       <div class="project-card glass fade-up">
         <div class="project-top"><span class="cat-badge cat-CICD">CI/CD</span></div>
@@ -247,19 +247,22 @@
         <p>Standardized CI/CD pipelines for containerized microservices with automated testing and deployment.</p>
         <ul class="project-details">
           <li>Shared Jenkins library for reusable pipeline stages</li>
+          <li>GitLab CI pipelines for containerized microservice builds and deployments</li>
           <li>Environment promotion workflow with manual approval gates</li>
         </ul>
-        <div class="project-tech"><span>Jenkins</span><span>Docker</span><span>GitHub Actions</span><span>ArgoCD</span></div>
+        <div class="project-tech"><span>Jenkins</span><span>GitLab CI</span><span>Docker</span><span>GitHub Actions</span><span>ArgoCD</span></div>
       </div>
       <div class="project-card glass fade-up">
-        <div class="project-top"><span class="cat-badge cat-Networking">Networking</span></div>
-        <h3>AWS WAF &amp; ALB Configuration</h3>
-        <p>Production WAF rule sets and ALB configurations for secure, highly available traffic routing.</p>
+        <div class="project-top"><span class="cat-badge cat-Networking">Serverless</span></div>
+        <h3>Serverless Architecture & Automation</h3>
+        <p>Event-driven serverless workflows on AWS for infrastructure automation, cost optimization, and operational tasks.</p>
         <ul class="project-details">
-          <li>AWS WAF managed rule groups with custom rate limiting</li>
-          <li>Route53 health checks and failover routing policies</li>
+          <li>AWS Lambda functions for automated remediation and scheduled infrastructure tasks</li>
+          <li>EventBridge rules triggering workflows based on AWS resource state changes</li>
+          <li>S3 + Lambda pipelines for automated data processing and notifications</li>
+          <li>API Gateway backed by Lambda for lightweight internal tooling</li>
         </ul>
-        <div class="project-tech"><span>AWS WAF</span><span>ALB</span><span>Route53</span><span>Terraform</span></div>
+        <div class="project-tech"><span>AWS Lambda</span><span>EventBridge</span><span>API Gateway</span><span>S3</span><span>Python</span></div>
       </div>
     </div>
   </div>
