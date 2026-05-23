@@ -22,7 +22,7 @@
       <a href="#certifications">Certifications</a>
       <a href="#projects">Projects</a>
       <a href="#contact">Contact</a>
-      <a href="resume.pdf" class="nav-resume" target="_blank">Resume</a>
+      <a href="#contact" onclick="requestResume()" class="nav-resume">Request Resume</a>
     </div>
     <button class="nav-mobile-btn" onclick="toggleMenu()" aria-label="Toggle menu">&#9776;</button>
   </div>
@@ -46,7 +46,7 @@
     <div class="hero-ctas">
       <a href="#projects" class="btn-secondary">View Projects</a>
       <a href="#contact" class="btn-secondary">Get in Touch</a>
-      <a href="resume.pdf" class="btn-secondary" target="_blank">Download Resume</a>
+      <a href="#contact" onclick="requestResume()" class="btn-secondary">Request Resume</a>
     </div>
     <div class="hero-socials">
       <a href="https://github.com/puskar45" target="_blank" class="social-btn" aria-label="GitHub">
@@ -268,9 +268,23 @@
 <!-- CONTACT -->
 <section id="contact" class="section">
   <div class="container" style="text-align:center">
-    <p class="section-label fade-up">Contact</p>
+    <p class="section-label fade-up">Get in Touch</p>
     <h2 class="section-title fade-up">Let's <span class="gradient-text">Connect</span></h2>
     <p class="contact-desc fade-up">Open to platform engineering roles, cloud architecture consulting, and DevOps collaboration.</p>
+
+    <form class="contact-form glass" onsubmit="submitForm(event)">
+      <div class="form-row">
+        <input type="text" id="form-name" placeholder="Your Name" required class="form-input" />
+        <input type="email" id="form-email" placeholder="Your Email" required class="form-input" />
+      </div>
+      <textarea id="form-message" placeholder="Your Message" rows="4" class="form-input form-textarea"></textarea>
+      <label class="form-check">
+        <input type="checkbox" id="form-resume" />
+        <span>Request CV / Resume</span>
+      </label>
+      <button type="submit" class="btn-primary form-submit">Send Message</button>
+    </form>
+
     <div class="contact-cards fade-up">
       <a href="https://github.com/puskar45" target="_blank" class="contact-card glass">
         <div class="contact-icon">
